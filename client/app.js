@@ -7,6 +7,8 @@ const messageContentInput = document.getElementById('message-content');
 messageContentInput.autocomplete = 'off';
 
 
+const socket = io();
+socket.on('message', ({ author, content }) => addMessage(author, content))
 
 let userName;
 
@@ -25,6 +27,7 @@ const sendMessage = (event) => {
     event.preventDefault();
     if(messageContentInput.value.length > 0) {
       addMessage(userName, messageContentInput.value);
+      socket.emit('message', { author: userName, content: messageContent })
       messageContentInput.value = '';
     } else {
       alert('please type your message')
