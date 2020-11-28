@@ -9,6 +9,8 @@ messageContentInput.autocomplete = 'off';
 
 const socket = io();
 socket.on('message', ({ author, content }) => addMessage(author, content))
+socket.on ('newUser', userName => addMessage(userName + 'just joined the chat'))
+socket.on('removeUser', userName => addMessage(userName +'just left the chat'))
 
 let userName;
 
@@ -16,6 +18,7 @@ const login = (event) => {
     event.preventDefault();
     if (userNameInput.value.length > 0) {
         userName = userNameInput.value;
+        socket.emit('login', {author: userName});
         loginForm.classList.remove('show');
         messagesSection.classList.add('show');
     } else {
