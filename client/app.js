@@ -9,8 +9,10 @@ messageContentInput.autocomplete = 'off';
 
 const socket = io();
 socket.on('message', ({ author, content }) => addMessage(author, content))
-socket.on ('newUser', userName => addMessage(userName + 'just joined the chat'))
-socket.on('removeUser', userName => addMessage(userName +'just left the chat'))
+socket.on ('newUser', userName => {
+  addMessage('System', userName +  ' just joined the conversation')
+})
+socket.on('removeUser', userName => addMessage('System', userName + 'just left the conversation'))
 
 let userName;
 
@@ -18,7 +20,7 @@ const login = (event) => {
     event.preventDefault();
     if (userNameInput.value.length > 0) {
         userName = userNameInput.value;
-        socket.emit('login', {author: userName});
+        socket.emit('login', {name: userName});
         loginForm.classList.remove('show');
         messagesSection.classList.add('show');
     } else {
@@ -30,7 +32,7 @@ const sendMessage = (event) => {
     event.preventDefault();
     if(messageContentInput.value.length > 0) {
       addMessage(userName, messageContentInput.value);
-      socket.emit('message', { author: userName, content: messageContent })
+      socket.emit('message', { author: userName, content: messageContentInput.value })
       messageContentInput.value = '';
     } else {
       alert('please type your message')
